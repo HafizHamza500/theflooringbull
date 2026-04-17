@@ -1,0 +1,16 @@
+# Robots.txt file for The Flooring Bull
+# Allow all user agents to crawl the website
+User-agent: *
+Allow: /
+
+# Disallow private/unnecessary pages
+Disallow: /test.html
+Disallow: /Components/
+Disallow: /css/
+Disallow: /js/
+
+# Sitemap location
+Sitemap: https://theflooringbull.com/sitemap.xml
+
+# Crawl-delay for search engines to avoid overwhelming the server
+Crawl-delay: 1

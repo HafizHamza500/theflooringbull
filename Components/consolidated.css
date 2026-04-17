@@ -1,0 +1,276 @@
+/* Consolidated CSS - Combined from styles.css and assets/styles.css */
+/* Custom styles layered on Tailwind for subtle effects */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+   font-family: 'Space Grotesk', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .funky-text {
+  font-family: 'Space Grotesk', sans-serif;
+}
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --gold: #FFD700;
+  --gold-dark: #B8860B;
+  --gold-light: #FFEB3B;
+  --gray-light: #f8f9fa;
+  --gray: #e9ecef;
+  --gray-dark: #343a40;
+  --text-dark: #212529;
+  --text-light: #f8f9fa;
+}
+
+html, body {
+  height: 100%;
+  font-size: 14px;
+}
+
+::selection {
+  background-color: var(--gold);
+  color: var(--black);
+}
+img{
+  user-select: none;
+}
+
+
+/* Hero slow zoom for video */
+.hero-zoom {
+  animation: zoom 20s ease-in-out infinite alternate;
+}
+
+@keyframes zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+/* Vintage background textures */
+.bg-paper-texture {
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.03) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 20%),
+    linear-gradient(45deg, rgba(255, 215, 0, 0.01) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 215, 0, 0.01) 25%, transparent 25%);
+  background-size: 100px 100px, 150px 150px, 50px 50px, 50px 50px;
+}
+
+.bg-divider-pattern {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 215, 0, 0.1) 10px,
+      rgba(255, 215, 0, 0.1) 20px
+    );
+}
+
+/* Wood grain strip — subtle repeating linear gradient */
+.bg-wood-grain {
+  background-color: var(--black);
+  background-image: linear-gradient(120deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.05) 100%);
+  background-size: 300px 60px;
+}
+
+
+
+/* Service card image zoom on hover */
+.service-card .relative {
+  transition: transform .6s ease-in-out;
+}
+
+.service-card:hover .relative {
+  transform: scale(1.06);
+}
+
+/* Enhanced testimonials styling */
+#testimonials .test-slide {
+  min-height: 140px;
+  transition: all 0.5s ease;
+}
+
+#testimonials .test-slide:hover {
+  transform: translateY(-5px);
+}
+
+/* Enhanced parallax image */
+.parallax-img {
+  transform: translateZ(0);
+  transition: transform .8s ease-in-out;
+}
+
+.parallax-img.in-view {
+  transform: translateY(-12px) scale(1.02);
+}
+
+/* Gallery tweaks */
+#projects-gallery img {
+  transition: transform .45s;
+}
+
+#projects-gallery a:hover img {
+  transform: scale(1.03);
+}
+
+/* Enhanced form styling */
+.form-step {
+  transition: opacity .3s ease, transform .3s ease;
+}
+
+.form-step.hidden {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  display: none;
+}
+
+.form-step:not(.hidden) {
+  opacity: 1;
+  transform: none;
+}
+
+/* Enhanced accessibility focus */
+/* :focus {
+  outline: 3px solid rgba(255, 215, 0, 0.35);
+  outline-offset: 2px;
+  border-radius: 4px;
+} */
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Small screens: keep category bar compact - support both old and new structure */
+@media (max-width: 768px) {
+
+  .hero-zoom {
+    background-position: 50% 30%;
+  }
+
+  #logo-wrap {
+    opacity: 1;
+  }
+
+  /* Hero responsive adjustments */
+  .hero {
+    height: 50vh;
+  }
+
+  .hero .hero-overlay h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Hero overlay behavior */
+.hero {
+  position: relative;
+}
+
+.hero video {
+  display: block;
+}
+
+.hero .hero-overlay {
+  opacity: 1;
+  transition: opacity .3s ease;
+  pointer-events: auto;
+}
+
+/* When video is playing, hide overlay by default */
+.hero.playing .hero-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* When video is paused, show overlay */
+.hero.paused .hero-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* On hover when playing, show overlay */
+.hero.playing:hover .hero-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero .hero-overlay h1,
+.hero .hero-overlay p {
+  text-shadow: 0 3px 12px rgba(0,0,0,.6);
+}
+
+/* Global Footer Styles */
+footer {
+  margin-top: auto;
+}
+
+footer a {
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding-top: 2rem !important;
+  }
+
+  footer .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  footer .flex {
+    flex-direction: column !important;
+    text-align: left !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+}
+
+
+    /* Carousel */
+
+    .carousel-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+.carousel-track {
+  display: flex;
+  gap: 1rem;
+  animation: carousel-scroll 60s linear infinite;
+  align-items: center;
+}
+.carousel-word {
+  flex-shrink: 0;
+  font-size: clamp(1rem, 6vw, 3rem);
+  font-weight: 700;
+  color: #000;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+  padding: 0 1rem;
+  user-select: none;
+}
+.accent {
+  color: #ff6b35;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin: 0 0.5rem;
+  font-weight: 700;
+}
+@keyframes carousel-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 1rem));
+  }
+}
