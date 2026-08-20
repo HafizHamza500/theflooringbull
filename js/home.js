@@ -68,23 +68,24 @@
         }
       });
 
-function drawArrows() {
-  const canvas = document.getElementById('arrow-canvas');
-  const cr = canvas.parentElement.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = cr.width * dpr; canvas.height = cr.height * dpr;
-  canvas.style.width = cr.width + 'px'; canvas.style.height = cr.height + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, cr.width, cr.height);
-  if (window.innerWidth < 768) return;
-  const circles = ['circle1','circle2','circle3'].map(id => document.getElementById(id));
-  const centers = circles.map(el => {
-    const r = el.getBoundingClientRect();
-    return { x: r.left - cr.left + r.width / 2, y: r.top - cr.top + r.height / 2 };
-  });
-  const circleR = circles[0].offsetWidth / 2;
-  const Y = '#f5c518', LW = Math.max(2.5, cr.width * 0.0015), BR = Math.max(16, cr.width * 0.012);
+  function drawArrows() {
+    const canvas = document.getElementById('arrow-canvas');
+    if (!canvas) return;
+    const cr = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = cr.width * dpr; canvas.height = cr.height * dpr;
+    canvas.style.width = cr.width + 'px'; canvas.style.height = cr.height + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, cr.width, cr.height);
+    if (window.innerWidth < 768) return;
+    const circles = ['circle1','circle2','circle3'].map(id => document.getElementById(id));
+    const centers = circles.map(el => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left - cr.left + r.width / 2, y: r.top - cr.top + r.height / 2 };
+    });
+    const circleR = circles[0].offsetWidth / 2;
+    const Y = '#f5c518', LW = Math.max(2.5, cr.width * 0.0015), BR = Math.max(16, cr.width * 0.012);
   for (let i = 0; i < 2; i++) {
     const x1 = centers[i].x + circleR + 4, x2 = centers[i+1].x - circleR - 4;
     const y = centers[i].y, mx = (x1 + x2) / 2;

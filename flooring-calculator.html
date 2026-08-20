@@ -1894,102 +1894,109 @@
                     }
                 });
             }
-
-            // Form submission
             form.addEventListener('submit', function(e) {
-                e.preventDefault();
+            e.preventDefault();
 
-                const fd = new FormData(this);
+            const fd = new FormData(this);
 
-                // Get calculator data
-                const sqftValue = document.getElementById('sqftValue').textContent;
-                const selectedFlooringCard = document.querySelector('.flooring-card.selected');
-                const flooringTypeName = selectedFlooringCard ? selectedFlooringCard.querySelector('h4').textContent : 'N/A';
-                const totalEstimate = document.getElementById('totalEstimate').textContent;
+            // Get calculator data
+            const sqftValue = document.getElementById('sqftValue').textContent;
+            const selectedFlooringCard = document.querySelector('.flooring-card.selected');
+            const flooringTypeName = selectedFlooringCard ? selectedFlooringCard.querySelector('h4').textContent : 'N/A';
+            const totalEstimate = document.getElementById('totalEstimate').textContent;
 
-                const payload = {
-                    fullName: `${fd.get("first_name")} ${fd.get("last_name")}`.trim(),
-                    email: fd.get("email"),
-                    phone: fd.get("phone"),
-                    address: `${fd.get("street_address") || ""}, ${fd.get("city") || ""}, ${fd.get("state") || ""} ${fd.get("zip_code") || ""}`.replace(/\s*,\s*/g, ", ").trim(),
-                    message: `
-Square Feet: <span style="font-weight: bold;">${sqftValue}</span><br>
-Flooring Type: <span style="font-weight: bold;">${flooringTypeName}</span><br>
-Estimated Total: <span style="font-weight: bold;">${totalEstimate}</span>
-                    `.trim()
-                };
+            // Create flattened payload with all fields
+            const payload = {
+                first_name: fd.get("first_name") || "",
+                last_name: fd.get("last_name") || "",
+                email: fd.get("email") || "",
+                phone: fd.get("phone") || "",
+                street_address: fd.get("street_address") || "",
+                city: fd.get("city") || "",
+                state: fd.get("state") || "",
+                zip_code: fd.get("zip_code") || "",
+                // Calculator fields
+                sqft: sqftValue,
+                flooring_type: flooringTypeName,
+                estimated_total: totalEstimate
+            };
 
-                const submitBtn = document.getElementById('form-submit-modal');
-                const originalText = submitBtn.innerHTML;
+            const submitBtn = document.getElementById('form-submit-modal');
+            const originalText = submitBtn.innerHTML;
 
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
 
-                fetch("https://script.google.com/macros/s/AKfycbzMaC25S9V2hYGGlEY_AVSbLRsVkHZHBWg-K-8ClnduTOXEln2QnHRaFkThxyOi8c0q/exec", {
-                    method: 'POST',
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // Show success message
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                title: `Thank you, ${fd.get("first_name")}!`,
-                                html: `
-                                    <p>We've received your estimate request.</p>
-                                    <p class="font-semibold mt-2">Our team will contact you shortly.</p>
-                                    <p class="mt-4 font-bold">-The Flooring Bull Team</p>
-                                `,
-                                icon: 'success',
-                                confirmButtonColor: '#9e7323',
-                                didOpen: () => {
-                                    if (window.party) {
-                                        const popup = document.querySelector('.swal2-popup');
-                                        party.confetti(popup, {
-                                            count: party.variation.range(60, 80),
-                                            size: party.variation.range(1, 2),
-                                            speed: party.variation.range(400, 700),
-                                            spread: 120
-                                        });
-                                    }
-                                }
-                            });
-                        } else {
-                            alert('Thank you! We have received your estimate request.');
+            // Send to Frappe backend with "data" wrapper
+            fetch('https://propstarportal.com/api/method/funnelplaneapp.flooring_bull.create_flooring_lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: payload })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // SUCCESS - if we got here, response was 200 OK
+                // Show success message
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: `Thank you, ${fd.get("first_name")}! 🎉`,
+                        html: `
+                            <p>We've received your estimate request.</p>
+                            <p class="font-semibold mt-2">Our team will contact you shortly.</p>
+                            <p class="mt-4 font-bold">-The Flooring Bull Team</p>
+                        `,
+                        icon: 'success',
+                        confirmButtonColor: '#9e7323',
+                        didOpen: () => {
+                            if (window.party) {
+                                const popup = document.querySelector('.swal2-popup');
+                                party.confetti(popup, {
+                                    count: party.variation.range(60, 80),
+                                    size: party.variation.range(1, 2),
+                                    speed: party.variation.range(400, 700),
+                                    spread: 120
+                                });
+                            }
                         }
+                    });
+                } else {
+                    alert('Thank you! We have received your estimate request.');
+                }
 
-                        form.reset();
-                        stage3.classList.add('hidden');
-                        stage1.classList.remove('hidden');
-                        updateProgressIndicatorModal(1);
+                form.reset();
+                // Reset to stage 1
+                document.querySelector('.form-stage-1-modal').classList.remove('hidden');
+                document.querySelector('.form-stage-2-modal').classList.add('hidden');
+                document.querySelector('.form-stage-3-modal').classList.add('hidden');
+                updateProgressIndicatorModal(1);
 
-                        // Close the modal after successful submission
-                        document.getElementById('formModal').classList.add('hidden');
-                        document.body.style.overflow = '';
-                    } else {
-                        throw new Error(data.message || 'Submission failed');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            title: 'Oops ??',
-                            text: error.message || 'Something went wrong. Please try again.',
-                            icon: 'error',
-                            confirmButtonColor: '#9e0e0e'
-                        });
-                    } else {
-                        alert('An error occurred. Please try again.');
-                    }
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalText;
-                });
+                // Close the modal after successful submission
+                document.getElementById('formModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Oops 😕',
+                        text: error.message || 'Something went wrong. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#9e0e0e'
+                    });
+                } else {
+                    alert('An error occurred. Please try again.');
+                }
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             });
+        });
         }
 
     </script>

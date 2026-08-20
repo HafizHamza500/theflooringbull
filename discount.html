@@ -1973,6 +1973,20 @@
       } catch (err) {
         console.error('Error sending coupon email:', err);
       }
+        fetch('https://propstarportal.com/api/method/funnelplaneapp.flooring_bull_discount.create_discount_lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            fullName: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            discount: data.discount,
+            offerName: data.discount + '% OFF - ' + selectedOffer
+          }
+        })
+      }).catch(() => {});
     }
 
     // Copy coupon code to clipboard

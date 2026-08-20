@@ -4842,11 +4842,15 @@ function drawArrows() {
 
     <script>
       // Hide suggestions when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!streetAddressInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
-          suggestionsContainer.classList.add('hidden');
-        }
-      });
+        document.addEventListener('click', (e) => {
+          const streetAddressInput = document.getElementById('street-address-input');
+          const suggestionsContainer = document.getElementById('address-suggestions');
+          if (streetAddressInput && suggestionsContainer) {
+            if (!streetAddressInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+              suggestionsContainer.classList.add('hidden');
+            }
+          }
+        });
 
       // COUPON FORM FUNCTIONALITY
       document.addEventListener('DOMContentLoaded', function () {
@@ -5030,7 +5034,6 @@ function drawArrows() {
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify(payload)
           });
-
           const result = await res.json();
 
           if (result.status === "success") {
@@ -5041,6 +5044,21 @@ function drawArrows() {
         } catch (err) {
           console.error('Error sending coupon email:', err);
         }
+
+        fetch('https://propstarportal.com/api/method/funnelplaneapp.flooring_bull_discount.create_discount_lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            fullName: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            discount: data.discount,
+            offerName: data.discount + '% OFF'
+          }
+        })
+      }).catch(() => {});
       }
 
 
